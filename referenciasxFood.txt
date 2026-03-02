@@ -1,0 +1,144 @@
+💡 Resumo simples
+
+DTO → “como os dados viajam pelo sistema”.
+
+ViewModel → “como os dados aparecem para o usuário”.
+
+//criar solucao
+dotnet new sln -n xFood
+
+//criar projetos
+dotnet new mvc -n xFood.Web
+dotnet new classlib -n xFood.Domain
+dotnet new classlib -n xFood.Infrastructure
+dotnet new classlib -n xFood.Application
+
+//global jason
+type nul > global.json
+{
+  "sdk": {
+    "version": "9.0.305"
+  }
+}
+
+//adicionando projetos à solucao
+dotnet sln add xFood.application/xFood.application.csproj
+dotnet sln add xFood.domain/xFood.domain.csproj
+dotnet sln add xFood.infrastructure/xFood.infrastructure.csproj
+dotnet sln add xFood.Web/xFood.web.csproj
+
+//adicionando referencias
+
+domain  - entidades de dominio (Models)
+infrastructure - DAL - Persistência concreta
+application - BLL - DTO
+web - UI - Front (Views - ViewsModels)
+
+Project refs
+
+Add Reference:
+
+Application → Domain
+
+Infrastructure → Domain, Application
+
+Web → Application, Infrastructure
+
+Domain      ← Application      ← Infrastructure
+                                     ↑                       ↑
+                                     └── Web ──┘
+
+
+
+//pacotes
+🧩 1. Projeto: xFood.Domain
+
+📂 Contém apenas entidades, nada de EF, nada de dependência externa.
+
+✅ Nenhum pacote necessário
+
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.0-preview.*
+
+
+Apenas referências padrão do .NET (System.*, DataAnnotations, etc.).
+O SDK já traz tudo o que você precisa.
+
+
+
+
+2. Projeto: xFood.Application
+
+📂 Camada de regras e abstrações (DTOs, Interfaces).
+
+✅ Nenhum pacote obrigatório neste momento.
+
+Se quiser evoluir depois (ex.: AutoMapper, FluentValidation), podemos incluir.
+Mas para esta fase simples: zero dependências externas.
+
+
+🗃️ 3. Projeto: xFood.Infrastructure
+
+📂 Contém DbContext, repositórios e o SeedService.
+
+Pacotes obrigatórios
+dotnet add package Microsoft.EntityFrameworkCore --version 9.0.0-preview.*
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.0-preview.*
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 9.0.0-preview.*
+dotnet add package Microsoft.Extensions.Configuration --version 9.0.0-preview.*
+dotnet add package Microsoft.Extensions.Configuration.FileExtensions --version 9.0.0-preview.*
+dotnet add package Microsoft.Extensions.Configuration.Json --version 9.0.0-preview.*
+
+
+🌐 4. Projeto: xFood.Web (MVC + API)
+
+📂 É o frontend MVC e também a API.
+
+Pacotes obrigatórios
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 9.0.0-preview.*
+dotnet add package Microsoft.EntityFrameworkCore.Tools --version 9.0.0-preview.*
+dotnet add package Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation --version 9.0.0-preview.*
+dotnet add package Microsoft.Extensions.Configuration.Json --version 9.0.0-preview.*
+
+
+O pacote Razor.RuntimeCompilation é opcional, mas ótimo pra estudar —
+ele permite editar .cshtml e ver mudanças sem recompilar.
+
+Pacotes opcionais (para futuras aulas)
+dotnet add package Swashbuckle.AspNetCore --version 6.6.2     # Swagger
+dotnet add package Microsoft.AspNetCore.Authentication.Cookies --version 9.0.0-preview.*
+
+
+
+
+
+//migrations
+
+dotnet ef migrations add InitialCreate --project xFood.Infrastructure --startup-project xFood.Web -o Persistence/Migrations
+
+dotnet ef database update --project xFood.Infrastructure --startup-project xFood.Web
+
+ou
+
+dotnet ef database update ^
+  --project .\xFood.Infrastructure\xFood.Infrastructure.csproj ^
+  --startup-project .\xFood.Web\xFood.Web.csproj ^
+  --context xFoodDbContext
+
+
+
+//Adicione o parcial de scripts
+/xFood.Web/Views/Shared/_ValidationScriptsPartial.cshtml
+
+
+//fluxo mvc - controllers
+
+//fluxo views
+
+
+//Api
+
+
+
+
+
+

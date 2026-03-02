@@ -1,0 +1,26 @@
+﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+@* jQuery + jQuery Validate + Unobtrusive (CDN) *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+@* Ajuste pt-BR: aceitar vírgula ou ponto como separador decimal *@
+<script>
+    (function () {
+      if (window.jQuery && $.validator && $.validator.methods) {
+        var numberRegex = /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:[,.]\d+)?$/;
+        $.validator.methods.number = function (value, element) {
+          if (this.optional(element)) return true;
+          return numberRegex.test(value.replace(/\s/g, ""));
+        };
+        // Para o jQuery Unobtrusive não se confundir com vírgula ao enviar:
+        $(document).on("submit", "form", function () {
+          $(this).find("input[data-val-number]").each(function () {
+            var v = this.value.replace(",", ".");
+            this.value = v;
+          });
+        });
+      }
+    })();
+</script>

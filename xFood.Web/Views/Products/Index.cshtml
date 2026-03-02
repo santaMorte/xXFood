@@ -1,0 +1,43 @@
+﻿@model IEnumerable<xFood.Application.DTOs.ProductDto>
+@{
+    ViewData["Title"] = "Produtos";
+    var categories = (SelectList)ViewBag.Categories;
+}
+<h2 class="mb-3">Produtos</h2>
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-auto">
+        <label class="form-label">Categoria</label>
+        <select name="categoryId" class="form-select" asp-items="categories">
+            <option value="">Todas</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-secondary">Filtrar</button>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index")">Limpar</a>
+        <a class="btn btn-primary" href="@Url.Action("Create")">Novo Produto</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Nome</th><th>Categoria</th><th class="text-end">Preço</th><th class="text-end">Estoque</th><th style="width:160px"></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.CategoryName</td>
+
+                <td class="text-end">@p.Price.ToString("c")</td>
+                <td class="text-end">@p.Stock</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = p.Id })">Editar</a>
+                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.Id })"
+                       onclick="return confirm('Excluir este produto?');">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
